@@ -1,10 +1,11 @@
 require('dotenv').config()
 const express = require('express');
-const http = require('http');
 const app = express();
 const mongoose = require('mongoose');
 const auth = require('./routes/auth');
-
+const fs = require('fs');
+const https = require('https');
+const path = require('path');
 
 mongoose.connect(process.env.URI, { useNewUrlParser: true }, () => {
     console.log('connected to db')
@@ -15,10 +16,12 @@ mongoose.connect(process.env.URI, { useNewUrlParser: true }, () => {
 app.use(express.json());
 app.use('/api/user', auth);
 
-// http.createServer(app).listen(3000, () => {
-//     console.log('Server started on port 3000');
-// }
-// );
-app.listen(3000,()=>{
-    console.log('sever running')
-})
+
+const port = 3000;
+https.createServer({
+    key: fs.readFileSync(path.join(__dirname,'bin', 'private.key')),
+    cert: fs.readFileSync(path.join(__dirname,'bin', 'certificate.pem'))
+}, app)
+    .listen(port, () => {
+        console.log(`Server running on port https://localhost:${port}`);
+    })
