@@ -49,7 +49,7 @@ router.post('/login', async (req, res, next) => {
 
 //test
 router.get('/users',verify,(req,res)=>{
-    res.status(200).send({res:"access granted"})
+    return res.status(200).send({res:"access granted"})
 })
 
 module.exports = router;
